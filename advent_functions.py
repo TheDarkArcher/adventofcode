@@ -151,3 +151,77 @@ def day_four_part_two(puzzle_input):
 		if len(line_list) == len(line_set):
 			result += 1
 	print(result)
+
+def day_five_part_one(puzzle_input):
+	result = 0
+	jump = 0
+	jump_list = puzzle_input.splitlines()
+	jump_list_len = len(jump_list)
+	for i in range(0, jump_list_len):
+		jump_list[i] = int(jump_list[i])
+	i = 0
+	while(0 <= i < jump_list_len):
+		result += 1
+		jump = jump_list[i]
+		jump_list[i] += 1
+		i += jump
+	print(result)
+
+def day_five_part_two(puzzle_input):
+	result = 0
+	jump = 0
+	jump_list = puzzle_input.splitlines()
+	jump_list_len = len(jump_list)
+	for i in range(0, jump_list_len):
+		jump_list[i] = int(jump_list[i])
+	i = 0
+	while(0 <= i < jump_list_len):
+		result += 1
+		jump = jump_list[i]
+		if jump >= 3:
+			jump_list[i] -= 1
+		else:
+			jump_list[i] += 1
+		i += jump
+	print(result)
+
+def day_six_part_one(puzzle_input):
+	result = 0
+	memory_banks = [int(i) for i in puzzle_input.split()]
+	memory_banks_history = []
+	while memory_banks[:] not in memory_banks_history:
+		memory_banks_history.append(memory_banks[:])
+		largest_bank = 0
+		largest_bank_index = 0
+		for i in range(0, len(memory_banks)):
+			if memory_banks[i] > largest_bank:
+				largest_bank = memory_banks[i]
+				largest_bank_index = i
+		memory_banks[largest_bank_index] = 0
+		while largest_bank > 0:
+			largest_bank_index = (largest_bank_index + 1) % len(memory_banks)
+			memory_banks[largest_bank_index] += 1
+			largest_bank -= 1
+	result = len(memory_banks_history)
+	print(result)
+
+def day_six_part_two(puzzle_input):
+	result = 0
+	memory_banks = [int(i) for i in puzzle_input.split()]
+	memory_banks_history = []
+	while memory_banks[:] not in memory_banks_history:
+		memory_banks_history.append(memory_banks[:])
+		largest_bank = 0
+		largest_bank_index = 0
+		for i in range(0, len(memory_banks)):
+			if memory_banks[i] > largest_bank:
+				largest_bank = memory_banks[i]
+				largest_bank_index = i
+		memory_banks[largest_bank_index] = 0
+		while largest_bank > 0:
+			largest_bank_index = (largest_bank_index + 1) % len(memory_banks)
+			memory_banks[largest_bank_index] += 1
+			largest_bank -= 1
+	result = len(memory_banks_history) - memory_banks_history.index(memory_banks[:])
+	print(result)
+
