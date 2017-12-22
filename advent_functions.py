@@ -225,3 +225,74 @@ def day_six_part_two(puzzle_input):
 	result = len(memory_banks_history) - memory_banks_history.index(memory_banks[:])
 	print(result)
 
+class day_event_tree_node():
+	def __init__(self, name, weight, children):
+		self.name = name
+		self.weight = weight
+		self.total_weight = None
+		self.children_string = children
+		self.children = []
+	def add_child(self, node):
+		self.children.append(node)
+	def calculate_weight(self):
+		self.total_weight = self.weight
+		for child in self.children:
+			self.total_weight += child.get_weight()
+		return self.total_weight
+	def check_balance(self):
+		balanced = True
+		if len(self.children) > 0:
+			base_child_weight = self.children[0].total_weight
+			for child in self.children[1:]:
+				balanced = base_child_weight == child.total_weight
+				if not balanced:
+					break
+		return balanced
+	def find_unbalanced_node(self):
+		unbalanced_node = None
+		for child in self.children:
+			if not child.check_balance():
+				unbalanced_node = child.find_unbalanced_node()
+		if unbalanced_node is None:
+			child_weights = [child.total_weight for child in self.children]
+			for weight in child_weights:
+				if child_weights.count(weight) == 1:
+					for child in self.children:
+						if child.total_weight == weight:
+							unbalanced_weight = child.name
+		return unbalanced_node
+
+def day_seven_part_one(puzzle_input):
+	result = None
+	disc_list = puzzle_input.splitlines()
+	unassigned_tree_node_pool = {}
+	for disc in disc_list[:]:
+		children = None
+		if '->' in disc:
+			disc, children = disc.split(' -> ')
+		name, weight = disc.split()
+		unassigned_tree_node_pool[name] = day_event_tree_node(name, int(weight[1:-1]), children)
+	for node in list(unassigned_tree_node_pool.values())[:]:
+		if node.children_string:
+			for child_name in node.children_string.split(', '):
+				node.add_child(unassigned_tree_node_pool.pop(child_name))
+	result = list(unassigned_tree_node_pool.keys())
+	print(result)
+
+def day_seven_part_two(puzzle_input):
+	result = None
+	disc_list = puzzle_input.splitlines()
+	unassigned_tree_node_pool = {}
+	for disc in disc_list[:]:
+		children = None
+		if '->' in disc:
+			disc, children = disc.split(' -> ')
+		name, weight = disc.split()
+		unassigned_tree_node_pool[name] = day_event_tree_node(name, int(weight[1:-1]), children)
+	for node in list(unassigned_tree_node_pool.values())[:]:
+		if node.children_string:
+			for child_name in node.children_string.split(', '):
+				node.add_child(unassigned_tree_node_pool.pop(child_name))
+	result = list(unassigned_tree_node_pool.values())[0].find_unbalanced_node()
+	print(result)
+
